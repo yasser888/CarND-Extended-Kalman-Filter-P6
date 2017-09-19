@@ -12,7 +12,7 @@ The motion model is a simple **linear Constant Velocity** model so the Kalman fi
 
 For LIDAR measurements, the position is measured directly so linear Kalman filter equations can also be used for the **Update** step.  For RADAR measurements, the measurement is in polar coordinates so the conversion to state variable position and velocity is nonlinear and uses Extended Kalman filter equations by linearizing around the current state with a **Jacobian** matrix.
 
-For each measurement received from the [Udacity Term 2 Simulator](https://github.com/udacity/self-driving-car-sim/releases), the program predicts the state for the current timestep, then updates the state with the RADAR or LIDAR measurement and calculated Kalman gain.  Sensor noise covariance (R) and process noise covariance (Q) are fixed values provided by Udacity.
+For each measurement received from the [Udacity Term 2 Simulator](https://github.com/udacity/self-driving-car-sim/releases), the program predicts the state for the current timestep, then updates the state with the RADAR or LIDAR measurement and calculated Kalman gain.  Sensor measurement noise covariance (R) and process noise covariance (Q) values are provided by Udacity for this project.
 
 The implementation uses the following matrices and equations:
 
@@ -21,7 +21,7 @@ The implementation uses the following matrices and equations:
 * F = state transition matrix
 * Q = process noise covariance matrix
 * H = measurement matrix
-* R = measurement noise covariance matrix R
+* R = measurement noise covariance matrix
 * z = measurement vector
 * y = error between measurement and estimate from state
 * S = pre-fit covariance matrix
@@ -61,16 +61,16 @@ The implementation uses the following matrices and equations:
 
 ## Key Files
 
-| File                       | Description                                                                                 |
-|:--------------------------:|:-------------------------------------------------------------------------------------------:|
-| /src/main.cpp              | Source code for **main loop** that handles **uWebSockets communication to simulator**       |
-| /src/FusionEKF.cpp, .h     | Source code for **sensor fusion algorithm** that processes RADAR/LIDAR measurements         |
-| /src/kalman_filter.cpp, .h | Source code for **standard Kalman filter** and **Extended Kalman filter** calculations      |
-| /src/tools.cpp, .h         | Source code for calculating **Jacobian** matrix and **RMSE** values                         |
-| /src/Eigen/                | Eigen library for matrix calculations in C++                                                |
-| /build/ExtendedKF          | Output **executable program binary**                                                        |
-| install-mac.sh             | Script for Mac to install uWebSocketIO required to interface with simulator                 |
-| install-ubuntu.sh          | Script for Linux to install uWebSocketIO required to interface with simulator               |
+| File                        | Description                                                                                 |
+|:---------------------------:|:-------------------------------------------------------------------------------------------:|
+| /src/main.cpp               | Source code for **main loop** that handles **uWebSockets communication to simulator**       |
+| /src/FusionEKF.cpp, .h      | Source code for **sensor fusion algorithm** that processes RADAR/LIDAR measurements         |
+| /src/kalman_filter.cpp, .h  | Source code for **standard Kalman filter** and **Extended Kalman filter** calculations      |
+| /src/tools.cpp, .h          | Source code for calculating **Jacobian** matrix and **RMSE** values                         |
+| /src/Eigen/                 | Eigen library for matrix calculations in C++                                                |
+| /build/ExtendedKF           | Output **executable program binary**                                                        |
+| install-mac.sh              | Script for Mac to install uWebSocketIO required to interface with simulator                 |
+| install-ubuntu.sh           | Script for Linux to install uWebSocketIO required to interface with simulator               |
 
 ## How to Build and Run Code
 
