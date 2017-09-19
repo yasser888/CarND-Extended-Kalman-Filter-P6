@@ -1,11 +1,77 @@
-# Extended Kalman Filter Project Starter Code
-Self-Driving Car Engineer Nanodegree Program
+# **Extended Kalman Filter**
 
-In this project you will utilize a kalman filter to estimate the state of a moving object of interest with noisy lidar and radar measurements. Passing the project requires obtaining RMSE values that are lower that the tolerance outlined in the project rubric. 
+**Udacity Self Driving Car Nanodegree - Project #6**
 
-This project involves the Term 2 Simulator which can be downloaded [here](https://github.com/udacity/self-driving-car-sim/releases)
+2017/9/19
 
-This repository includes two files that can be used to set up and install [uWebSocketIO](https://github.com/uWebSockets/uWebSockets) for either Linux or Mac systems. For windows you can use either Docker, VMware, or even [Windows 10 Bash on Ubuntu](https://www.howtogeek.com/249966/how-to-install-and-use-the-linux-bash-shell-on-windows-10/) to install uWebSocketIO. Please see [this concept in the classroom](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/0949fca6-b379-42af-a919-ee50aa304e6a/lessons/f758c44c-5e40-4e01-93b5-1a82aa4e044f/concepts/16cf4a78-4fc7-49e1-8621-3450ca938b77) for the required version and installation scripts.
+## Overview
+
+This project implements a **sensor fusion** algorithm to use **standard (linear)** and **extended (nonlinear)** [Kalman filter](https://en.wikipedia.org/wiki/Kalman_filter) (or LQE linear quadratic estimator) in C++ to estimate the state (position and velocity) of a moving object of interest with noisy LIDAR and RADAR measurements.
+
+The motion model is a simple **linear Constant Velocity** model so the Kalman filter **Predict** step uses the standard (linear) Kalman filter equations.
+
+For LIDAR measurements, the position is measured directly so linear Kalman filter equations can also be used for the **Update** step.  For RADAR measurements, the measurement is in polar coordinates so the conversion to state variable position and velocity is nonlinear and uses Extended Kalman filter equations by linearizing around the current state with a **Jacobian** matrix.
+
+For each measurement received from the [Udacity Term 2 Simulator](https://github.com/udacity/self-driving-car-sim/releases), the program predicts the state for the current timestep, then updates the state with the RADAR or LIDAR measurement and calculated Kalman gain.  Sensor noise covariance (R) and process noise covariance (Q) are fixed values provided by Udacity.
+
+The implementation uses the following matrices and equations:
+
+x = estimated state
+P = state covariance matrix
+F = state transition matrix
+Q = process noise covariance matrix
+H = measurement matrix
+R = measurement noise covariance matrix R
+z = measurement vector
+y = error between measurement and estimate from state
+S = pre-fit covariance matrix
+K = Kalman gain
+
+**Standard Linear Kalman Filter Predict step equations**
+x = F * x
+P = F * P * Ft + Q
+
+**Standard Linear Kalman Filter Update step equations**
+z_pred = H * x
+y = z – z_pred
+S = H * P * Ht + R
+K = P * Ht * Sinv
+x = x + (K * y)
+P = (I – K * H) * P
+
+**Extended Nonlinear Kalman Filter Predict step equations**
+*Note: These were not needed because motion model is linear*
+Fj = Jacobian of f(x) linearized at state x
+x = f(x)
+P = Fj * P * Fjt + Q
+
+**Extended  Nonlinear Kalman Filter Update step equations**
+Hj = Jacobian of h(x) linearized at state x
+z_pred = h(x)
+y = z – z_pred
+S = Hj * P * Hjt + R
+K = P * Hjt * Sinv
+x = x + (K * y)
+P = (I – K * Hj) * P
+
+## Key Files
+
+| File                       | Description                                                                                 |
+|:--------------------------:|:-------------------------------------------------------------------------------------------:|
+| /src/main.cpp              | Source code for **main loop** that handles **uWebSockets communication to simulator**       |
+| /src/FusionEKF.cpp, .h     | Source code for **sensor fusion algorithm** that processes RADAR/LIDAR measurements         |
+| /src/kalman_filter.cpp, .h | Source code for **standard Kalman filter** and **Extended Kalman filter** calculations      |
+| /src/tools.cpp, .h         | Source code for calculating **Jacobian** matrix and **RMSE** values                         |
+| /src/Eigen/                | Eigen library for matrix calculations in C++                                                |
+| /build/ExtendedKF          | Output **executable program binary**                                                        |
+| install-mac.sh             | Script for Mac to install uWebSocketIO required to interface with simulator                 |
+| install-ubuntu.sh          | Script for Linux to install uWebSocketIO required to interface with simulator               |
+
+## How to Build and Run Code
+
+This project involves the Udacity Term 2 Simulator which can be downloaded [here](https://github.com/udacity/self-driving-car-sim/releases)
+
+This repository includes two scripts (**install-mac.sh** and **install-ubuntu.sh**) that can be used to set up and install [uWebSocketIO](https://github.com/uWebSockets/uWebSockets) for either Linux or Mac systems.
 
 Once the install for uWebSocketIO is complete, the main program can be built and run by doing the following from the project top directory.
 
@@ -14,29 +80,6 @@ Once the install for uWebSocketIO is complete, the main program can be built and
 3. cmake ..
 4. make
 5. ./ExtendedKF
-
-Note that the programs that need to be written to accomplish the project are src/FusionEKF.cpp, src/FusionEKF.h, kalman_filter.cpp, kalman_filter.h, tools.cpp, and tools.h
-
-The program main.cpp has already been filled out, but feel free to modify it.
-
-Here is the main protcol that main.cpp uses for uWebSocketIO in communicating with the simulator.
-
-
-INPUT: values provided by the simulator to the c++ program
-
-["sensor_measurement"] => the measurement that the simulator observed (either lidar or radar)
-
-
-OUTPUT: values provided by the c++ program to the simulator
-
-["estimate_x"] <= kalman filter estimated position x
-["estimate_y"] <= kalman filter estimated position y
-["rmse_x"]
-["rmse_y"]
-["rmse_vx"]
-["rmse_vy"]
-
----
 
 ## Other Important Dependencies
 
@@ -51,76 +94,17 @@ OUTPUT: values provided by the c++ program to the simulator
   * Mac: same deal as make - [install Xcode command line tools](https://developer.apple.com/xcode/features/)
   * Windows: recommend using [MinGW](http://www.mingw.org/)
 
-## Basic Build Instructions
+## Communication protocol between uWebSocketIO and Simulator
 
-1. Clone this repo.
-2. Make a build directory: `mkdir build && cd build`
-3. Compile: `cmake .. && make` 
-   * On windows, you may need to run: `cmake .. -G "Unix Makefiles" && make`
-4. Run it: `./ExtendedKF `
+**INPUT to main.cpp**: values provided by the simulator to the C++ program
 
-## Editor Settings
+["sensor_measurement"] => the measurement that the simulator observed (either lidar or radar)
 
-We've purposefully kept editor configuration files out of this repo in order to
-keep it as simple and environment agnostic as possible. However, we recommend
-using the following settings:
+**OUTPUT from main.cpp**: values provided by the C++ program to the simulator
 
-* indent using spaces
-* set tab width to 2 spaces (keeps the matrices in source code aligned)
-
-## Code Style
-
-Please (do your best to) stick to [Google's C++ style guide](https://google.github.io/styleguide/cppguide.html).
-
-## Generating Additional Data
-
-This is optional!
-
-If you'd like to generate your own radar and lidar data, see the
-[utilities repo](https://github.com/udacity/CarND-Mercedes-SF-Utilities) for
-Matlab scripts that can generate additional data.
-
-## Project Instructions and Rubric
-
-Note: regardless of the changes you make, your project must be buildable using
-cmake and make!
-
-More information is only accessible by people who are already enrolled in Term 2
-of CarND. If you are enrolled, see [the project resources page](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/0949fca6-b379-42af-a919-ee50aa304e6a/lessons/f758c44c-5e40-4e01-93b5-1a82aa4e044f/concepts/382ebfd6-1d55-4487-84a5-b6a5a4ba1e47)
-for instructions and the project rubric.
-
-## Hints and Tips!
-
-* You don't have to follow this directory structure, but if you do, your work
-  will span all of the .cpp files here. Keep an eye out for TODOs.
-* Students have reported rapid expansion of log files when using the term 2 simulator.  This appears to be associated with not being connected to uWebSockets.  If this does occur,  please make sure you are conneted to uWebSockets. The following workaround may also be effective at preventing large log files.
-
-    + create an empty log file
-    + remove write permissions so that the simulator can't write to log
-
-## Call for IDE Profiles Pull Requests
-
-Help your fellow students!
-
-We decided to create Makefiles with cmake to keep this project as platform
-agnostic as possible. Similarly, we omitted IDE profiles in order to we ensure
-that students don't feel pressured to use one IDE or another.
-
-However! We'd love to help people get up and running with their IDEs of choice.
-If you've created a profile for an IDE that you think other students would
-appreciate, we'd love to have you add the requisite profile files and
-instructions to ide_profiles/. For example if you wanted to add a VS Code
-profile, you'd add:
-
-* /ide_profiles/vscode/.vscode
-* /ide_profiles/vscode/README.md
-
-The README should explain what the profile does, how to take advantage of it,
-and how to install it.
-
-Regardless of the IDE used, every submitted project must
-still be compilable with cmake and make.
-
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
-
+["estimate_x"] <= kalman filter estimated position x
+["estimate_y"] <= kalman filter estimated position y
+["rmse_x"]
+["rmse_y"]
+["rmse_vx"]
+["rmse_vy"]
