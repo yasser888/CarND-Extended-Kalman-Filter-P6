@@ -16,43 +16,48 @@ For each measurement received from the [Udacity Term 2 Simulator](https://github
 
 The implementation uses the following matrices and equations:
 
-x = estimated state
-P = state covariance matrix
-F = state transition matrix
-Q = process noise covariance matrix
-H = measurement matrix
-R = measurement noise covariance matrix R
-z = measurement vector
-y = error between measurement and estimate from state
-S = pre-fit covariance matrix
-K = Kalman gain
+* x = estimated state
+* P = state covariance matrix
+* F = state transition matrix
+* Q = process noise covariance matrix
+* H = measurement matrix
+* R = measurement noise covariance matrix R
+* z = measurement vector
+* y = error between measurement and estimate from state
+* S = pre-fit covariance matrix
+* K = Kalman gain
 
 **Standard Linear Kalman Filter Predict step equations**
-x = F * x
-P = F * P * Ft + Q
+
+* x = F * x
+* P = F * P * Ft + Q
 
 **Standard Linear Kalman Filter Update step equations**
-z_pred = H * x
-y = z – z_pred
-S = H * P * Ht + R
-K = P * Ht * Sinv
-x = x + (K * y)
-P = (I – K * H) * P
+
+* z_pred = H * x
+* y = z – z_pred
+* S = H * P * Ht + R
+* K = P * Ht * Sinv
+* x = x + (K * y)
+* P = (I – K * H) * P
 
 **Extended Nonlinear Kalman Filter Predict step equations**
+
 *Note: These were not needed because motion model is linear*
-Fj = Jacobian of f(x) linearized at state x
-x = f(x)
-P = Fj * P * Fjt + Q
+
+* Fj = Jacobian of f(x) linearized at state x
+* x = f(x)
+* P = Fj * P * Fjt + Q
 
 **Extended  Nonlinear Kalman Filter Update step equations**
-Hj = Jacobian of h(x) linearized at state x
-z_pred = h(x)
-y = z – z_pred
-S = Hj * P * Hjt + R
-K = P * Hjt * Sinv
-x = x + (K * y)
-P = (I – K * Hj) * P
+
+* Hj = Jacobian of h(x) linearized at state x
+* z_pred = h(x)
+* y = z – z_pred
+* S = Hj * P * Hjt + R
+* K = P * Hjt * Sinv
+* x = x + (K * y)
+* P = (I – K * Hj) * P
 
 ## Key Files
 
@@ -98,13 +103,13 @@ Once the install for uWebSocketIO is complete, the main program can be built and
 
 **INPUT to main.cpp**: values provided by the simulator to the C++ program
 
-["sensor_measurement"] => the measurement that the simulator observed (either lidar or radar)
+* ["sensor_measurement"] => the measurement that the simulator observed (either lidar or radar)
 
 **OUTPUT from main.cpp**: values provided by the C++ program to the simulator
 
-["estimate_x"] <= kalman filter estimated position x
-["estimate_y"] <= kalman filter estimated position y
-["rmse_x"]
-["rmse_y"]
-["rmse_vx"]
-["rmse_vy"]
+* ["estimate_x"] <= kalman filter estimated position x
+* ["estimate_y"] <= kalman filter estimated position y
+* ["rmse_x"]
+* ["rmse_y"]
+* ["rmse_vx"]
+* ["rmse_vy"]
