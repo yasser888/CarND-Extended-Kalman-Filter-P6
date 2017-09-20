@@ -72,6 +72,8 @@ The implementation uses the following matrices and equations:
 | install-mac.sh              | Script for Mac to install uWebSocketIO required to interface with simulator                 |
 | install-ubuntu.sh           | Script for Linux to install uWebSocketIO required to interface with simulator               |
 
+The original Udacity project repository is [here](https://github.com/udacity/CarND-Extended-Kalman-Filter-Project).
+
 ## How to Build and Run Code
 
 This project involves the Udacity Term 2 Simulator which can be downloaded [here](https://github.com/udacity/self-driving-car-sim/releases)
@@ -85,6 +87,15 @@ Once the install for uWebSocketIO is complete, the main program can be built and
 3. cmake ..
 4. make
 5. ./ExtendedKF
+
+If using Xcode to build, run the following commands:
+
+1. mkdir xbuild
+2. cd xbuild
+3. cmake -G "Xcode" ..
+4. Open "ExtendedKF.xcodeproj" in Xcode and build
+5. cd Debug
+6. ./ExtendedKF
 
 ## Other Important Dependencies
 
