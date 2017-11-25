@@ -14,6 +14,10 @@ For LIDAR measurements, the position is measured directly so linear Kalman filte
 
 For each measurement received from the [Udacity Term 2 Simulator](https://github.com/udacity/self-driving-car-sim/releases), the program predicts the state for the current timestep, then updates the state with the RADAR or LIDAR measurement and calculated Kalman gain.  Sensor measurement noise covariance (R) and process noise covariance (Q) values are provided by Udacity for this project.
 
+[<img src="./images/EKF_video_screenshot.png" width="800">](https://vimeo.com/243362212)
+
+## Reference Equations
+
 The implementation uses the following matrices and equations:
 
 * x = estimated state
