@@ -2,10 +2,9 @@
 
 **Udacity Self Driving Car Nanodegree - Project #6**
 
-2017/9/19
 
 ## Overview
-
+build full sensor fusion model using Kalman filter
 This project implements a **sensor fusion** algorithm to use **standard (linear)** and **extended (nonlinear)** [Kalman filter](https://en.wikipedia.org/wiki/Kalman_filter) (or LQE linear quadratic estimator) in C++ to estimate the state (position and velocity) of a moving object of interest with noisy LIDAR and RADAR measurements.
 
 The motion model is a simple **linear Constant Velocity** model so the Kalman filter **Predict** step uses the standard (linear) Kalman filter equations.
@@ -14,67 +13,8 @@ For LIDAR measurements, the position is measured directly so linear Kalman filte
 
 For each measurement received from the [Udacity Term 2 Simulator](https://github.com/udacity/self-driving-car-sim/releases), the program predicts the state for the current timestep, then updates the state with the RADAR or LIDAR measurement and calculated Kalman gain.  Sensor measurement noise covariance (R) and process noise covariance (Q) values are provided by Udacity for this project.
 
-[<img src="./images/EKF_video_screenshot.png" width="800">](https://vimeo.com/243362212)
+[<img src="./images/screen.jpg" width="800">](https://youtu.be/10MlJwmhwcA)
 
-## Reference Equations
-
-The implementation uses the following matrices and equations:
-
-* x = estimated state
-* P = state covariance matrix
-* F = state transition matrix
-* Q = process noise covariance matrix
-* H = measurement matrix
-* R = measurement noise covariance matrix
-* z = measurement vector
-* y = error between measurement and estimate from state
-* S = pre-fit covariance matrix
-* K = Kalman gain
-
-**Standard Linear Kalman Filter Predict step equations**
-
-* x = F * x
-* P = F * P * Ft + Q
-
-**Standard Linear Kalman Filter Update step equations**
-
-* z_pred = H * x
-* y = z – z_pred
-* S = H * P * Ht + R
-* K = P * Ht * Sinv
-* x = x + (K * y)
-* P = (I – K * H) * P
-
-**Extended Nonlinear Kalman Filter Predict step equations**
-
-*Note: These were not needed because motion model is linear*
-
-* Fj = Jacobian of f(x) linearized at state x
-* x = f(x)
-* P = Fj * P * Fjt + Q
-
-**Extended  Nonlinear Kalman Filter Update step equations**
-
-* Hj = Jacobian of h(x) linearized at state x
-* z_pred = h(x)
-* y = z – z_pred
-* S = Hj * P * Hjt + R
-* K = P * Hjt * Sinv
-* x = x + (K * y)
-* P = (I – K * Hj) * P
-
-## Key Files
-
-| File                        | Description                                                                                 |
-|:---------------------------:|:-------------------------------------------------------------------------------------------:|
-| /src/main.cpp               | Source code for **main loop** that handles **uWebSockets communication to simulator**       |
-| /src/FusionEKF.cpp, .h      | Source code for **sensor fusion algorithm** that processes RADAR/LIDAR measurements         |
-| /src/kalman_filter.cpp, .h  | Source code for **standard Kalman filter** and **Extended Kalman filter** calculations      |
-| /src/tools.cpp, .h          | Source code for calculating **Jacobian** matrix and **RMSE** values                         |
-| /src/Eigen/                 | Eigen library for matrix calculations in C++                                                |
-| /build/ExtendedKF           | Output **executable program binary**                                                        |
-| install-mac.sh              | Script for Mac to install uWebSocketIO required to interface with simulator                 |
-| install-ubuntu.sh           | Script for Linux to install uWebSocketIO required to interface with simulator               |
 
 The original Udacity project repository is [here](https://github.com/udacity/CarND-Extended-Kalman-Filter-Project).
 
